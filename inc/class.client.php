@@ -66,9 +66,12 @@ class SimpleCustomTypes_Client {
 			$custom_type['capabilities'] = array_map( 'trim', $custom_type['capabilities'] );
 			$custom_type['capabilities'] = array_filter($custom_type['capabilities']);
 			
-			// Cast has archive
+			// CPT has archive
 			$custom_type['has_archive'] = (boolean) $custom_type['has_archive'];
-				
+			if ( $custom_type['has_archive'] && !empty($custom_type['archive_slug']) ) {
+				$custom_type['has_archive'] = $custom_type['archive_slug'];
+			}
+			
 			// Rewriting
 			if ( (boolean) $custom_type['rewrite'] == true ) {
 				$custom_type['rewrite'] = array( 'slug' => $custom_type['query_var'], 'with_front' => true, 'pages' => true, 'feeds' => $custom_type['has_archive'] );
@@ -98,7 +101,7 @@ class SimpleCustomTypes_Client {
 				'public' 				=> true, // not proposed because all flags are specified.
 				'hierarchical' 			=> (boolean) $custom_type['hierarchical'],
 				'rewrite' 				=> $custom_type['rewrite'],
-				'has_archive' 			=> (boolean) $custom_type['has_archive'],
+				'has_archive' 			=> $custom_type['has_archive'],
 				'query_var' 			=> $custom_type['query_var'],
 				'supports' 				=> (array) $custom_type['supports'],
 				// 'register_meta_box_cb', not proposed because it needs a PHP function.

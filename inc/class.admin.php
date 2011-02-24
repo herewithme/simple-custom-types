@@ -58,6 +58,7 @@ class SimpleCustomTypes_Admin {
 			'rewrite' 				=> 1, // boolean|array( 'slug', 'with_front' )
 			'has_archive'			=> 1,
 			'query_var' 			=> '',
+			'archive_slug'			=> '',
 			'supports' 				=> array('title', 'editor'),
 			// 'register_meta_box_cb', not proposed because it needs a PHP function.
 			'taxonomies' 			=> array(),
@@ -336,6 +337,12 @@ class SimpleCustomTypes_Admin {
 										}
 										?>
 									</select>
+								</p>
+								<p class="description"><?php _e("<strong>Has archive view ?</strong> allow to have a view archive for this custom post type.", 'simple-customtypes'); ?></p>
+								
+								<p>
+									<label for="archive_slug"><?php _e('Query var for archives ', 'simple-customtypes'); ?></label>
+									<input name="archive_slug" id="archive_slug" type="text" value="<?php echo esc_attr($customtype['archive_slug']); ?>" />
 								</p>
 								<p class="description"><?php _e("<strong>Query var for archives</strong> is used for build URLs for lisiting objects of a custom types. Also archives for post...", 'simple-customtypes'); ?></p>
 
@@ -734,7 +741,7 @@ class SimpleCustomTypes_Admin {
 		if ( isset($_POST['action']) && in_array( $_POST['action'], array('add-customtype', 'merge-customtype') ) ) {
 			
 			if ( !current_user_can('manage_options') )
-				wp_die(__( 'You cannot edit the Simple Custom Types options.', 'simple-customtypes' ));
+				wp_die(__( 'You cannot edit the Simple Custom Post Types options.', 'simple-customtypes' ));
 			
 			// Clean values from _POST
 			$customtype = array();
