@@ -100,13 +100,10 @@ class SimpleCustomTypes_Admin {
 	 */
 	function checkAdminPost() {
 		global $wp_rewrite;
-	
+		
 		// Change custom type setting
 		$this->checkMergeCustomType();
 		$this->checkDeleteCustomType();
-		
-		// Flush rewriting rules !
-		$wp_rewrite->flush_rules();
 	}
 	
 	/**
@@ -786,6 +783,9 @@ class SimpleCustomTypes_Admin {
 					check_admin_referer( 'simplecustomtype-edit-type' );
 					$this->updateCustomType( $customtype );
 				}
+				
+				// Flush rewriting rules !
+				$wp_rewrite->flush_rules(false);
 			} else {
 				$this->message = __('Impossible to add your custom type... You must enter a custom type name.', 'simple-customtypes');
 				$this->status  = 'error';
@@ -809,6 +809,10 @@ class SimpleCustomTypes_Admin {
 			$customtype = array();
 			$customtype['name'] = stripslashes($_GET['customtype_name']);
 			$this->deleteCustomType( $customtype, false );
+			
+			// Flush rewriting rules !
+			$wp_rewrite->flush_rules(false);
+			
 			return true;
 		} elseif ( isset($_GET['action']) && isset($_GET['customtype_name']) && $_GET['action'] == 'flush-delete' ) {
 			check_admin_referer( 'flush-delete-customtype-'.$_GET['customtype_name'] );
@@ -816,6 +820,10 @@ class SimpleCustomTypes_Admin {
 			$customtype = array();
 			$customtype['name'] = stripslashes($_GET['customtype_name']);
 			$this->deleteCustomType( $customtype, true );
+			
+			// Flush rewriting rules !
+			$wp_rewrite->flush_rules(false);
+			
 			return true;
 		}
 		return false;

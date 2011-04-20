@@ -3,8 +3,8 @@ Contributors: momo360modena
 Donate link: http://www.beapi.fr/donate/
 Tags: custom, post types, cms, post type, archive, view, permalink, rewriting, rewrite
 Requires at least: 3.1
-Tested up to: 3.1
-Stable tag: 3.1.1
+Tested up to: 3.1.1
+Stable tag: 3.1.2
 
 == Description ==
 
@@ -47,6 +47,8 @@ You must install a plugin for managing roles and permissions as:
 
 == Changelog ==
 
+* Version 3.1.2 :
+	* Fix a bug with permalink flush on admin.
 * Version 3.1.1 :
 	* Add possibility to custom slug for CPT archives...
 	* Add french translation. (not finished)
