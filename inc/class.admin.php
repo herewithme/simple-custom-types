@@ -99,11 +99,9 @@ class SimpleCustomTypes_Admin {
 	 * @author Amaury Balmer
 	 */
 	function checkAdminPost() {
-		global $wp_rewrite;
-		
-		// Change custom type setting
 		$this->checkMergeCustomType();
 		$this->checkDeleteCustomType();
+		$this->checkImportExport();
 	}
 	
 	/**
@@ -175,7 +173,7 @@ class SimpleCustomTypes_Admin {
 		?>
 		<div class="wrap">
 			<?php screen_icon(); ?>
-			<h2><?php _e("Simple Customs Types", 'simple-customtypes'); ?></h2>
+			<h2><?php _e("Simple Custom Post Types", 'simple-customtypes'); ?></h2>
 			
 			<div class="message updated">
 				<p><?php _e('<strong>Warning:</strong> Flush & Delete a custom type will delete post type and also all content and all relations related.', 'simple-customtypes'); ?></p>
@@ -241,6 +239,31 @@ class SimpleCustomTypes_Admin {
 				</div>
 			
 			</div><!-- /col-container -->
+		</div>
+		
+		<div class="wrap">
+			<h2><?php _e("Simple Custom Post Types : Export/Import", 'simple-customtypes'); ?></h2>
+			
+			<a class="button" href="<?php echo wp_nonce_url($this->admin_url.'&amp;action=export_config', 'export-config'); ?>"><?php _e("Export config file", 'simple-customtypes'); ?></a>
+			<a class="button" href="#" id="toggle-import_form"><?php _e("Import config file", 'simple-customtypes'); ?></a>
+			<script type="text/javascript">
+				jQuery("#toggle-import_form").click(function(event) {
+					event.preventDefault();
+					jQuery('#import_form').removeClass('hide-if-js');
+				});
+			</script>
+			<div id="import_form" class="hide-if-js">
+				<form action="<?php echo $this->admin_url ; ?>" method="post" enctype="multipart/form-data">
+					<p>
+						<label><?php _e("Config file", 'simple-customtypes'); ?></label>
+						<input type="file" name="config_file" />
+					</p>
+					<p class="submit">
+						<?php wp_nonce_field( 'import_config_file' ); ?>
+						<input class="button-primary" type="submit" name="import_config_file" value="<?php _e('I want import a config from a previous backup, this action will REPLACE current configuration', 'simple-customtypes'); ?>" />
+					</p>
+				</form>
+			</div>
 		</div>
 		<?php
 		return true;
@@ -727,6 +750,57 @@ class SimpleCustomTypes_Admin {
 		</form>
 		<?php
 	}
+
+	/**
+	 * Check $_GET/$_POST/$_FILES for Export/Import
+	 * 
+	 * @return boolean
+	 */
+	function checkImportExport() {
+		if ( isset($_GET['action']) && $_GET['action'] == 'export_config' ) {
+			check_admin_referer('export-config');
+			
+			// No cache
+			header( 'Expires: Sat, 26 Jul 1997 05:00:00 GMT' ); 
+			header( 'Last-Modified: ' . gmdate( 'D, d M Y H:i:s' ) . ' GMT' ); 
+			header( 'Cache-Control: no-store, no-cache, must-revalidate' ); 
+			header( 'Cache-Control: post-check=0, pre-check=0', false ); 
+			header( 'Pragma: no-cache' ); 
+			
+			// Force download dialog
+			header("Content-Type: application/force-download");
+			header("Content-Type: application/octet-stream");
+			header("Content-Type: application/download");
+
+			// use the Content-Disposition header to supply a recommended filename and
+			// force the browser to display the save dialog.
+			header("Content-Disposition: attachment; filename=simple-custom-post-types-config-".date('U').".txt;");
+			die('SIMPLECUSTOMTYPES'.base64_encode(serialize(get_option( SCUST_OPTION ))));
+		} elseif( isset($_POST['import_config_file']) && isset($_FILES['config_file']) ) {
+			check_admin_referer( 'import_config_file' );
+			
+			if ( $_FILES['config_file']['error'] > 0 ) {
+				$this->message = __('An error occured during the config file upload. Please fix your server configuration and retry.', 'simple-customtypes');
+				$this->status  = 'error';
+			} else {
+				$config_file = file_get_contents( $_FILES['config_file']['tmp_name'] );
+				if ( substr($config_file, 0, strlen('SIMPLECUSTOMTYPES')) !== 'SIMPLECUSTOMTYPES' ) {
+					$this->message = __('This is really a config file for Simple Custom Post Types ? Probably corrupt :(', 'simple-customtypes');
+					$this->status  = 'error';
+				} else {
+					$config_file = unserialize(base64_decode(substr($config_file, strlen('SIMPLECUSTOMTYPES'))));
+					if ( !is_array($config_file) ) {
+						$this->message = __('This is really a config file for Simple Custom Post Types ? Probably corrupt :(', 'simple-customtypes');
+						$this->status  = 'error';
+					} else {
+						update_option(SCUST_OPTION, $config_file);
+						$this->message = __('OK. Configuration is restored.', 'simple-customtypes');
+						$this->status  = 'updated';
+					}
+				}
+			}
+		}
+	}
 	
 	/**
 	 * Check $_POST datas for add/merge custom type
@@ -785,6 +859,7 @@ class SimpleCustomTypes_Admin {
 				}
 				
 				// Flush rewriting rules !
+				global $wp_rewrite;
 				$wp_rewrite->flush_rules(false);
 			} else {
 				$this->message = __('Impossible to add your custom type... You must enter a custom type name.', 'simple-customtypes');
@@ -811,6 +886,7 @@ class SimpleCustomTypes_Admin {
 			$this->deleteCustomType( $customtype, false );
 			
 			// Flush rewriting rules !
+			global $wp_rewrite;
 			$wp_rewrite->flush_rules(false);
 			
 			return true;
@@ -822,6 +898,7 @@ class SimpleCustomTypes_Admin {
 			$this->deleteCustomType( $customtype, true );
 			
 			// Flush rewriting rules !
+			global $wp_rewrite;
 			$wp_rewrite->flush_rules(false);
 			
 			return true;

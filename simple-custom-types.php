@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: Simple Custom Post Types
-Version: 3.1.2
+Version: 3.2
 Plugin URI: http://redmine.beapi.fr/projects/show/simple-custom-type
 Description: WordPress 3.1 and up allow to manage new custom post type, this plugin makes it even simpler, removing the need for you to write <em>any</em> code. Excerpt update your theme ! Adds friendly permalink support, template files, and a conditional for public, non-hierarchical custom post types. 
 Author: Amaury Balmer
@@ -33,7 +33,7 @@ Todo :
 */
 
 // Folder name
-define ( 'SCUST_VERSION', '3.1.2' );
+define ( 'SCUST_VERSION', '3.2' );
 define ( 'SCUST_OPTION',  'simple-custom-types' );
 define ( 'SCUST_FOLDER',  'simple-custom-types' );
 
