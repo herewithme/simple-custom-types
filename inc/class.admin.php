@@ -244,7 +244,7 @@ class SimpleCustomTypes_Admin {
 		<div class="wrap">
 			<h2><?php _e("Simple Custom Post Types : Export/Import", 'simple-customtypes'); ?></h2>
 			
-			<a class="button" href="<?php echo wp_nonce_url($this->admin_url.'&amp;action=export_config', 'export-config'); ?>"><?php _e("Export config file", 'simple-customtypes'); ?></a>
+			<a class="button" href="<?php echo wp_nonce_url($this->admin_url.'&amp;action=export_config_scpt', 'export-config-scpt'); ?>"><?php _e("Export config file", 'simple-customtypes'); ?></a>
 			<a class="button" href="#" id="toggle-import_form"><?php _e("Import config file", 'simple-customtypes'); ?></a>
 			<script type="text/javascript">
 				jQuery("#toggle-import_form").click(function(event) {
@@ -757,8 +757,8 @@ class SimpleCustomTypes_Admin {
 	 * @return boolean
 	 */
 	function checkImportExport() {
-		if ( isset($_GET['action']) && $_GET['action'] == 'export_config' ) {
-			check_admin_referer('export-config');
+		if ( isset($_GET['action']) && $_GET['action'] == 'export_config_scpt' ) {
+			check_admin_referer('export-config-scpt');
 			
 			// No cache
 			header( 'Expires: Sat, 26 Jul 1997 05:00:00 GMT' ); 

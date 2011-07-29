@@ -4,7 +4,7 @@ Donate link: http://www.beapi.fr/donate/
 Tags: custom, post types, cms, post type, archive, view, permalink, rewriting, rewrite
 Requires at least: 3.1
 Tested up to: 3.2.1
-Stable tag: 3.2
+Stable tag: 3.2.1
 
 == Description ==
 
@@ -47,6 +47,8 @@ You must install a plugin for managing roles and permissions as:
 
 == Changelog ==
 
+* Version 3.2.1 :
+	* Fix possible bug with others plugin's beapi that use export/import
 * Version 3.2 :
 	* Fix a bug with permalink flush on admin... Global not defined...
 	* Add Export/Import config tool
