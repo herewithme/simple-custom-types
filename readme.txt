@@ -47,8 +47,10 @@ You must install a plugin for managing roles and permissions as:
 
 == Changelog ==
 
+* Version 3.2.1.1 :
+	* Fix possible bug with others plugin's beapi that use import 
 * Version 3.2.1 :
-	* Fix possible bug with others plugin's beapi that use export/import
+	* Fix possible bug with others plugin's beapi that use export
 * Version 3.2 :
 	* Fix a bug with permalink flush on admin... Global not defined...
 	* Add Export/Import config tool
