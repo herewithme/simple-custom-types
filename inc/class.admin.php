@@ -65,6 +65,8 @@ class SimpleCustomTypes_Admin {
 			'show_ui' 				=> 1,
 			'menu_position' 		=> 25,
 			'menu_icon' 			=> '',
+			'custom_role_checkbox'	=> '',
+			'custom_role'			=> '',
 			// 'permalink_epmask' => EP_PERMALINK, not proposed because it need a PHP constant. (and too advanced settings for this plugin actually !)
 			'can_export' 			=> 1,
 			'show_in_nav_menus'		=> 1,
@@ -102,6 +104,7 @@ class SimpleCustomTypes_Admin {
 		$this->checkMergeCustomType();
 		$this->checkDeleteCustomType();
 		$this->checkImportExport();
+		$this->checkResetRoles();
 	}
 	
 	/**
@@ -159,6 +162,11 @@ class SimpleCustomTypes_Admin {
 				case 'updated' :
 					$this->message = __('Custom type updated with success !', 'simple-customtypes');
 					break;
+			}
+			
+			// Add/Update role ?
+			if ( ($_GET['message'] == 'added' || $_GET['message'] == 'updated') && isset($_GET['cpt']) ) {
+				$this->flushRole( $_GET['cpt'] );
 			}
 		}
 		
@@ -259,11 +267,18 @@ class SimpleCustomTypes_Admin {
 						<input type="file" name="config_file" />
 					</p>
 					<p class="submit">
-						<?php wp_nonce_field( 'import_config_file' ); ?>
+						<?php wp_nonce_field( 'import_config_file_scpt' ); ?>
 						<input class="button-primary" type="submit" name="import_config_file_scpt" value="<?php _e('I want import a config from a previous backup, this action will REPLACE current configuration', 'simple-customtypes'); ?>" />
 					</p>
 				</form>
 			</div>
+		</div>
+		
+		<div class="wrap">
+			<h2><?php _e("Simple Custom Post Types : Reset all roles", 'simple-customtypes'); ?></h2>
+			
+			<a class="button" href="<?php echo wp_nonce_url($this->admin_url.'&amp;reset_roles=true', 'reset_roles'); ?>" onclick="if ( confirm( '<?php echo esc_js( sprintf( __( "You are about to delete and flush all roles.\n  'Cancel' to stop, 'OK' to delete.", 'simple-customtypes' ), $_t['labels']['name'] ) ); ?>' ) ) { return true;}return false;"><?php _e("Reset all roles", 'simple-customtypes'); ?></a>
+			<p><?php _e("Warning : All roles will be deleted and created again", 'simple-customtypes'); ?></p>
 		</div>
 		<?php
 		return true;
@@ -486,6 +501,15 @@ class SimpleCustomTypes_Admin {
 										<label for="capability_type_custom"><?php _e('Custom capability type', 'simple-customtypes'); ?></label>
 										<input name="capability_type_custom" id="capability_type_custom" type="text" value="<?php echo esc_attr($customtype['capability_type_custom']); ?>" />
 										<p class="description"><?php _e("The string to use to build the read, edit, and delete capabilities. Defaults to 'post'. May be passed as an array to allow for alternative plurals when using this argument as a base to construct the capabilities, separe the two values with a comma, e.g. story,stories.", 'simple-customtypes'); ?></p>
+									</p>
+									<p>
+										<label for="custom_role_checkbox"><?php _e('Add a custom role ?', 'simple-customtypes'); ?></label>
+										<input name="custom_role_checkbox" id="custom_role_checkbox" type="checkbox" <?php checked( $customtype['custom_role_checkbox'], 1 ); ?> value="1" />
+									</p>
+									<p>
+										<label for="custom_role"><?php _e('Custom role', 'simple-customtypes'); ?></label>
+										<input name="custom_role" id="custom_role" type="text" value="<?php echo esc_attr($customtype['custom_role']); ?>" />
+										<p class="description"><?php _e("You can create a custom role for this post type.", 'simple-customtypes'); ?></p>
 									</p>
 									<p>
 										<a href="#" class="display-advanced-caps"><?php _e('Show very advanced capabilities settings'); ?></a>
@@ -801,6 +825,37 @@ class SimpleCustomTypes_Admin {
 			}
 		}
 	}
+
+	/**
+	 * Check is the admin wants to regenerate all roles
+	 *
+	 * @return boolean
+	 * @author Amaury Balmer
+	 */	
+	function checkResetRoles() {
+		if ( !isset($_GET['reset_roles']) || $_GET['reset_roles'] != "true" )
+			return false;
+		
+		check_admin_referer( 'reset_roles' );
+		
+		// CPT exist ?
+		$current_options = get_option( SCUST_OPTION );
+		if ( !isset( $current_options['customtypes'] ) || empty( $current_options['customtypes'] ) || !is_array( $current_options['customtypes'] ) )
+			return false;
+		
+		// Loop on CPT
+		foreach ( $current_options['customtypes'] as $cpt_name => $cpt ) {
+			// Remove role
+			$this->removeRole( $cpt_name );
+			
+			// flush each role with a custom role
+			if ( isset($cpt['custom_role_checkbox']) && (int) $cpt['custom_role_checkbox'] == 1 )
+				$this->flushRole( $cpt_name );
+		}
+		
+		$this->message = __('OK. Roles are restored.', 'simple-customtypes');
+		$this->status  = 'updated';
+	}
 	
 	/**
 	 * Check $_POST datas for add/merge custom type
@@ -921,9 +976,10 @@ class SimpleCustomTypes_Admin {
 		}
 		$current_options['customtypes'][$customtype['name']] = $customtype;
 		
+		// Save
 		update_option( SCUST_OPTION, $current_options );
 		
-		wp_redirect( $this->admin_url.'&message=added' );
+		wp_redirect( $this->admin_url.'&message=added&cpt=' . $customtype['name']);
 		exit();
 	}
 	
@@ -942,9 +998,10 @@ class SimpleCustomTypes_Admin {
 		}
 		$current_options['customtypes'][$customtype['name']] = $customtype;
 		
+		// Save
 		update_option( SCUST_OPTION, $current_options );
 		
-		wp_redirect( $this->admin_url.'&message=updated' );
+		wp_redirect( $this->admin_url.'&message=updated&cpt=' . $customtype['name'] );
 		exit();
 	}
 	
@@ -963,11 +1020,18 @@ class SimpleCustomTypes_Admin {
 			wp_die( __('Tcheater ? You try to delete a custom type who not exist...', 'simple-customtypes') );
 		}
 		
-		unset($current_options['customtypes'][$customtype['name']]); // Delete from options
-		if ( $flush_content == true )
-			$this->deleteObjectsCustomType( $customtype['name'] ); // Delete object relations/terms
+		// Delete from options
+		unset($current_options['customtypes'][$customtype['name']]);
 		
+		// Delete object relations/terms
+		if ( $flush_content == true )
+			$this->deleteObjectsCustomType( $customtype['name'] );
+		
+		// Save settings
 		update_option( SCUST_OPTION, $current_options );
+		
+		// Remove custom role for this post type
+		$this->removeRole( $customtype['name'] );
 		
 		if ( $flush_content == true )
 			wp_redirect( $this->admin_url.'&message=flush-deleted' );
@@ -984,14 +1048,17 @@ class SimpleCustomTypes_Admin {
 	 * @author Amaury Balmer
 	 */
 	function deleteObjectsCustomType( $custom_type_name = '' ) {
+		global $wpdb;
+		
 		if ( empty($custom_type_name) )
 			return false;
 		
-		global $wpdb;
+		// Get all id with this post type
 		$p_ids = $wpdb->get_col( $wpdb->prepare("SELECT ID FROM $wpdb->posts WHERE post_type = %s", $custom_type_name) );
 		if ( $p_ids == false || is_wp_error($p_ids) )
 			return false;
 		
+		// Delete each post
 		foreach( (array) $p_ids as $p_id ) {
 			wp_delete_post( $p_id, true );
 		}
@@ -1038,6 +1105,79 @@ class SimpleCustomTypes_Admin {
 	}
 	
 	/**
+	 * Reset a custom role
+	 *
+	 * @param string $post_type
+	 * @return bool
+	 * @author Benjamin Niess
+	 */
+	function flushRole( $post_type = '' ) {
+		if ( empty($post_type) || !post_type_exists($post_type) )
+			return false;
+			
+		$post_type_obj = get_post_type_object( $post_type );
+		if ( empty( $post_type_obj ) )
+			return false;
+		
+		// Create a slug for the role
+		$current_options = get_option( SCUST_OPTION );
+		if ( !isset( $current_options['customtypes'][$post_type]['custom_role'] ) || empty( $current_options['customtypes'][$post_type]['custom_role'] ) )
+			$current_options['customtypes'][$post_type]['custom_role'] = $post_type_obj->name;
+		
+		// Build a slug for role.
+		$role_slug = sanitize_title( $current_options['customtypes'][$post_type]['custom_role'] );
+		
+		// Get or create the custom role
+		$custom_role = get_role( $role_slug );
+		if ( $custom_role == false ) {
+			// Create role
+			add_role( $role_slug, sprintf(__('%s Editor', 'simple-customtypes'), $post_type_obj->labels->name) );
+			
+			// Get role object
+			$custom_role = get_role( $role_slug );
+		}
+		
+		// Get default roles
+		$admin_role  = get_role( 'administrator' );
+		$editor_role = get_role( 'editor' );
+		
+		// Add caps for this roles
+		
+		foreach( (array) $post_type_obj->cap as $capability_value ) {
+			$admin_role->add_cap( $capability_value, true );
+			$editor_role->add_cap( $capability_value, true );
+			
+			if ( isset($custom_role) && !empty($custom_role) )
+				$custom_role->add_cap( $capability_value, true );
+		}
+		
+		return true;
+	}
+
+	/**
+	 * Remove a custom role from the role list
+	 *
+	 * @param string $post_type
+	 * @return bool
+	 * @author Benjamin Niess
+	 */
+	function removeRole( $post_type = '' ) {
+		$current_options = get_option(SCUST_OPTION);
+		if ( empty($post_type) || !post_type_exists($post_type) )
+			return false;
+		
+		// Get role name
+		$role = ( isset($current_options['customtypes'][$post_type]['custom_role']) && !empty($current_options['customtypes'][$post_type]['custom_role']) ) ? sanitize_title($current_options['customtypes'][$post_type]['custom_role']) : $post_type; 
+		
+		// Role exist ?
+		$current_role = get_role($role);
+		if ( empty($current_role) )
+			return false;
+		
+		return remove_role( $role );
+	}
+	
+	/**
 	 * Helper for build the HTML selector features
 	 *
 	 * @param string $key 
@@ -1081,11 +1221,11 @@ class SimpleCustomTypes_Admin {
 		}
 		
 		if ( isset($message) && !empty($message) ) {
-		?>
+			?>
 			<div id="message" class="<?php echo ($status != '') ? $status :'updated'; ?> fade">
 				<p><strong><?php echo $message; ?></strong></p>
 			</div>
-		<?php
+			<?php
 		}
 	}
 }

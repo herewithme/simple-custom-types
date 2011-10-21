@@ -4,7 +4,7 @@ Donate link: http://www.beapi.fr/donate/
 Tags: custom, post types, cms, post type, archive, view, permalink, rewriting, rewrite
 Requires at least: 3.1
 Tested up to: 3.2.1
-Stable tag: 3.2.1
+Stable tag: 3.2.2
 
 == Description ==
 
@@ -12,7 +12,7 @@ WordPress 3.1 and up allow to manage new custom post type, this plugin makes it 
 
 This plugin provides a nice interface and easy access. The plugin provides almost all the parameters of the WordPress CPT API.
 
-It's possible to manage the permissions of custom post types such as articles or pages. Or create a full set of custom permissions.
+It's possible to manage the permissions of custom post types such as articles or pages. Or create a full set of custom permissions and related roles !
 
 == Frequently Asked Questions ==
 
@@ -47,6 +47,8 @@ You must install a plugin for managing roles and permissions as:
 
 == Changelog ==
 
+* Version 3.2.2 :
+	* Add role creation for each post type (thanks to benjaminniess for brilliant patch and me for idea :D)
 * Version 3.2.1.1 :
 	* Fix possible bug with others plugin's beapi that use import 
 * Version 3.2.1 :
