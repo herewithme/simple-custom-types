@@ -1,15 +1,15 @@
 <?php
 /*
 Plugin Name: Simple Custom Post Types
-Version: 3.3
-Plugin URI: http://redmine.beapi.fr/projects/show/simple-custom-type
+Version: 3.4
+Plugin URI: http://wordpress.org/extend/plugins/simple-custom-types/
 Description: WordPress 3.1 and up allow to manage new custom post type, this plugin makes it even simpler, removing the need for you to write <em>any</em> code. Excerpt update your theme ! Adds friendly permalink support, template files, and a conditional for public, non-hierarchical custom post types. 
 Author: Amaury Balmer
 Author URI: http://www.beapi.fr
 
 ----
 
-Copyright 2009-2011 Amaury Balmer (amaury@beapi.fr)
+Copyright 2009-2012 Amaury Balmer (amaury@beapi.fr)
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -33,18 +33,12 @@ Todo :
 */
 
 // Folder name
-define ( 'SCUST_VERSION', '3.3' );
+define ( 'SCUST_VERSION', '3.4' );
 define ( 'SCUST_OPTION',  'simple-custom-types' );
 define ( 'SCUST_FOLDER',  'simple-custom-types' );
 
-// mu-plugins or regular plugins ?
-if ( is_dir(WPMU_PLUGIN_DIR . DIRECTORY_SEPARATOR . SCUST_FOLDER ) ) {
-	define ( 'SCUST_DIR', WPMU_PLUGIN_DIR . DIRECTORY_SEPARATOR . SCUST_FOLDER );
-	define ( 'SCUST_URL', WPMU_PLUGIN_URL . '/' . SCUST_FOLDER );
-} else {
-	define ( 'SCUST_DIR', WP_PLUGIN_DIR . DIRECTORY_SEPARATOR . SCUST_FOLDER );
-	define ( 'SCUST_URL', WP_PLUGIN_URL . '/' . SCUST_FOLDER );
-}
+define ( 'SCUST_URL', plugins_url('', __FILE__) );
+define ( 'SCUST_DIR', dirname(__FILE__) );
 
 // Call all class and functions
 require( SCUST_DIR . '/inc/class.client.php' );

@@ -102,6 +102,7 @@ class SimpleCustomTypes_Admin {
 	 */
 	function checkAdminPost() {
 		$this->checkMergeCustomType();
+		$this->checkExportCustomType();
 		$this->checkDeleteCustomType();
 		$this->checkImportExport();
 		$this->checkResetRoles();
@@ -226,6 +227,7 @@ class SimpleCustomTypes_Admin {
 									<br />
 									<div class="row-actions">
 										<span class="edit"><a href="<?php echo $this->admin_url; ?>&amp;action=edit&amp;customtype_name=<?php echo $_t_name; ?>"><?php _e('Edit', 'simple-customtypes'); ?></a> | </span>
+										<span class="export"><a href="<?php echo wp_nonce_url($this->admin_url.'&amp;action=export_php&amp;customtype_name='.$_t_name, 'export_php-customtype-'.$_t_name); ?>"><?php _e('Export PHP', 'simple-customtypes'); ?></a> | </span>
 										<span class="delete"><a class="delete-customtype" href="<?php echo wp_nonce_url($this->admin_url.'&amp;action=delete&amp;customtype_name='.$_t_name, 'delete-customtype-'.$_t_name); ?>" onclick="if ( confirm( '<?php echo esc_js( sprintf( __( "You are about to delete this custom post type '%s'\n  'Cancel' to stop, 'OK' to delete.", 'simple-customtypes' ), $_t['labels']['name'] ) ); ?>' ) ) { return true;}return false;"><?php _e('Delete', 'simple-customtypes'); ?></a> | </span>
 										<span class="delete"><a class="flush-delete-customtype" href="<?php echo wp_nonce_url($this->admin_url.'&amp;action=flush-delete&amp;customtype_name='.$_t_name, 'flush-delete-customtype-'.$_t_name); ?>" onclick="if ( confirm( '<?php echo esc_js( sprintf( __( "You are about to delete and flush this custom post type '%s' and all this content.\n  'Cancel' to stop, 'OK' to delete.", 'simple-customtypes' ), $_t['labels']['name'] ) ); ?>' ) ) { return true;}return false;"><?php _e('Flush & Delete', 'simple-customtypes'); ?></a></span>
 									</div>
@@ -923,6 +925,55 @@ class SimpleCustomTypes_Admin {
 			}
 			return true;
 		}
+		return false;
+	}
+
+	/**
+	 * Allow to export registration CPT with PHP
+	 */
+	function checkExportCustomType() {
+		global $simple_customtypes;
+		
+		if ( isset($_GET['action']) && isset($_GET['customtype_name']) && $_GET['action'] == 'export_php' ) {
+			check_admin_referer( 'export_php-customtype-'.$_GET['customtype_name'] );
+			
+			// Get proper CPT name
+			$cpt_name = stripslashes($_GET['customtype_name']);
+			
+			// Get CPT data
+			$current_options = get_option( SCUST_OPTION );
+			if ( !isset($current_options['customtypes'][$cpt_name]) ) { // CPT not exist ?
+				wp_die( __('Tcheater ? You try to export a custom type who not exist...', 'simple-customtypes') );
+			} else {
+				$cpt_data = $current_options['customtypes'][$cpt_name];
+			}
+			
+			// Get proper args
+			$args = $simple_customtypes['client']->prepareArgs( $cpt_data );
+			
+			// Get args to code
+			$code = 'register_post_type( "'.$cpt_name.'", '.var_export($args, true).' );';
+			
+			// Get plugin template
+			$output = file_get_contents( SCUST_DIR . '/inc/template/plugin.tpl' );
+			
+			// Replace marker by variables
+			$output = str_replace( '%CPT_LABEL%', $args['labels']['name'], $output );
+			$output = str_replace( '%CPT_NAME%', $cpt_name, $output );
+			$output = str_replace( '%CPT_CODE%', $code, $output );
+			
+			// Force download
+			header( "Content-Disposition: attachment; filename=" . $cpt_name.'.php' );
+			header( "Content-Type: application/force-download" );
+			header( "Content-Type: application/octet-stream" );
+			header( "Content-Type: application/download" );
+			header( "Content-Description: File Transfer" ); 
+			flush(); // this doesn't really matter.
+			
+			die($output);
+			return true;
+		}
+		
 		return false;
 	}
 	

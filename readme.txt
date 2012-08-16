@@ -3,8 +3,12 @@ Contributors: momo360modena
 Donate link: http://www.beapi.fr/donate/
 Tags: custom, post types, cms, post type, archive, view, permalink, rewriting, rewrite
 Requires at least: 3.1
-Tested up to: 3.3.1
-Stable tag: 3.3
+Stable tag: 3.4
+Tested up to: 3.4.1
+License: GPLv2 or later
+License URI: http://www.gnu.org/licenses/gpl-2.0.html
+
+WordPress 3.1 and up allow to manage new custom post type, this plugin makes it even simpler, removing the need for you to write <em>any</em> code.
 
 == Description ==
 
@@ -22,11 +26,11 @@ This plugin is developped on WordPress 3.3, with the constant WP_DEBUG to TRUE.
 
 No, we prefer to use 2 plugins specifically designed to meet two different needs ...
 
-= How to create a custom post type? =
+= How to create a custom taxonomy ? =
 
 You can use a another plugin writted by Me and BeAPI :
 
-* [Simple Custom Post Types](http://wordpress.org/extend/plugins/simple-post-types/)
+* [Simple Custom Taxonomy](http://wordpress.org/extend/plugins/simple-taxonomy/)
 
 = How to create a custom role? =
 
@@ -49,6 +53,9 @@ You must install a plugin for managing roles and permissions as:
 
 == Changelog ==
 
+* Version 3.4 :
+	* Add export PHP feature
+	* Mark as compatible with WP 3.4.1
 * Version 3.3 :
 	* Convert conversion tools to BULK edit
 	* Sync POT with latest trunk
