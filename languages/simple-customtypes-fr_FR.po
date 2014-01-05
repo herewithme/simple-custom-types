@@ -221,7 +221,7 @@ msgstr ""
 
 #: inc/class.admin.php:298
 msgid "Add custom type"
-msgstr "Ajoiuter un type de contenu"
+msgstr "Ajouter un type de contenu"
 
 #: inc/class.admin.php:318
 msgid "Update custom type"
@@ -350,7 +350,7 @@ msgstr ""
 #: inc/class.admin.php:506
 #, fuzzy
 msgid "Add a custom role ?"
-msgstr "Ajoiuter un type de contenu"
+msgstr "Ajouter un type de contenu"
 
 #: inc/class.admin.php:510
 #, fuzzy
