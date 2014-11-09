@@ -123,6 +123,7 @@ class SimpleCustomTypes_Client {
 			'show_in_menu'			=> (boolean) $custom_type['show_in_menu'],
 			//'_builtin'			=> false,
 			//'_edit_link' 			=> 'post.php?post=%d'
+            'yarpp_support'         => true
 		);
 		
 		// Capabilities

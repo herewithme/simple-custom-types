@@ -5,8 +5,8 @@ msgstr ""
 "Project-Id-Version: Simple Custom Post Types 3.1\n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/simple-custom-types\n"
 "POT-Creation-Date: 2012-01-12 10:05:55+00:00\n"
-"PO-Revision-Date: 2012-01-12 11:06+0100\n"
-"Last-Translator: Amaury Balmer <amaury@beapi.fr>\n"
+"PO-Revision-Date: 2014-10-05 14:15+0100\n"
+"Last-Translator: manooweb <ehesry@gmail.com>\n"
 "Language-Team: BeAPI <translation@beapi.fr>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -183,19 +183,19 @@ msgstr "Simple Custom Post Types"
 
 #: inc/class.admin.php:255
 msgid "Export config file"
-msgstr ""
+msgstr "Exporter le fichier de configuration"
 
 #: inc/class.admin.php:256
 msgid "Import config file"
-msgstr ""
+msgstr "Importer le fichier de configuration"
 
 #: inc/class.admin.php:266
 msgid "Config file"
-msgstr ""
+msgstr "Fichier de configuration"
 
 #: inc/class.admin.php:271
 msgid "I want import a config from a previous backup, this action will REPLACE current configuration"
-msgstr ""
+msgstr "Je veux importer une configuration d'une sauvegarde précédente, cette action REMPLACERA la configuration actuelle"
 
 #: inc/class.admin.php:278
 #, fuzzy
@@ -213,11 +213,11 @@ msgstr ""
 
 #: inc/class.admin.php:280
 msgid "Reset all roles"
-msgstr ""
+msgstr "Remettre à zéro tous les rôles"
 
 #: inc/class.admin.php:281
 msgid "Warning : All roles will be deleted and created again"
-msgstr ""
+msgstr "Attention : Tous les rôle sont supprimés et créés de nouveau"
 
 #: inc/class.admin.php:298
 msgid "Add custom type"
@@ -269,7 +269,7 @@ msgstr ""
 
 #: inc/class.admin.php:404
 msgid "Display on admin ?"
-msgstr ""
+msgstr "Affichage dans l'administration ?"
 
 #: inc/class.admin.php:412
 msgid "Whether to generate a default UI for managing this post type."
@@ -281,7 +281,7 @@ msgstr ""
 
 #: inc/class.admin.php:421
 msgid "Show in admin menu ?"
-msgstr ""
+msgstr "Afficher dans le menu d'administration"
 
 #: inc/class.admin.php:429
 msgid "Where to show the post type in the admin menu. True for a top level menu, false for no menu, or can be a top level page like 'tools.php' or 'edit.php?post_type=page'. Show UI must be true."
@@ -289,7 +289,7 @@ msgstr ""
 
 #: inc/class.admin.php:433
 msgid "Show in nav menus ?"
-msgstr ""
+msgstr "Afficher dans les menus personnalisés"
 
 #: inc/class.admin.php:441
 msgid "Put this setting to true for display this custom type on navigation menu tools."
@@ -297,7 +297,7 @@ msgstr ""
 
 #: inc/class.admin.php:445
 msgid "Can export ?"
-msgstr ""
+msgstr "Peut être exporté ?"
 
 #: inc/class.admin.php:453
 msgid "Put this setting to true for export this post type items on WordPress eXtended RSS (or WXR)"
@@ -305,7 +305,7 @@ msgstr ""
 
 #: inc/class.admin.php:457
 msgid "Position on menu"
-msgstr ""
+msgstr "Position dans le menu"
 
 #: inc/class.admin.php:459
 msgid "This field allow to order the position of the custom type menu on admin. By the defaut, the value are upper than 25."
@@ -313,7 +313,7 @@ msgstr ""
 
 #: inc/class.admin.php:463
 msgid "Menu Icon"
-msgstr ""
+msgstr "Icône du menu"
 
 #: inc/class.admin.php:465
 msgid "You can specifiy a custom icon with this field, just put this URI. (use the media manager for upload image)"
@@ -350,7 +350,7 @@ msgstr ""
 #: inc/class.admin.php:506
 #, fuzzy
 msgid "Add a custom role ?"
-msgstr "Ajouter un type de contenu"
+msgstr "Ajoiuter un type de contenu"
 
 #: inc/class.admin.php:510
 #, fuzzy
@@ -552,7 +552,7 @@ msgstr "Ajouter"
 
 #: inc/class.admin.php:807
 msgid "An error occured during the config file upload. Please fix your server configuration and retry."
-msgstr ""
+msgstr "Une erreur s'est produite pendant le téléchargement du fichier de configuration. Veuillez corriger la configuration de votre serveur et réessayer."
 
 #: inc/class.admin.php:812
 #: inc/class.admin.php:817
@@ -561,11 +561,11 @@ msgstr ""
 
 #: inc/class.admin.php:821
 msgid "OK. Configuration is restored."
-msgstr ""
+msgstr "OK. La configuration a été restaurée."
 
 #: inc/class.admin.php:856
 msgid "OK. Roles are restored."
-msgstr ""
+msgstr "Ok. Les rôles ont été restaurés"
 
 #: inc/class.admin.php:870
 #, fuzzy
@@ -652,7 +652,7 @@ msgstr "Attributs de page (utile pour les types de contenu avec hiérarchie)"
 
 #: inc/class.admin.conversion.php:11
 msgid "Item(s) converted on another post type with success."
-msgstr ""
+msgstr "Elément(s) converti(s) avec succès sur un autre type de contenu."
 
 #: inc/class.admin.conversion.php:36
 #: inc/class.admin.conversion.php:41
