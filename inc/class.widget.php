@@ -5,7 +5,7 @@
  */
 class Widget_Recent_Objects extends WP_Widget {
 	
-	function Widget_Recent_Objects() {
+	function __construct() {
 		$widget_ops = array(
 			'classname' => 'widget_recent_objects',
 			'description' => __( "The most recent objects on your blog", 'simple-customtypes')
