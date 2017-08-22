@@ -50,6 +50,7 @@ class Scust_Dump extends WP_CLI_Command {
         require_once( SCUST_DIR . '/inc/class.admin.conversion.php' );
 
         $current_options = get_option( SCUST_OPTION )['customtypes'];
+        $cmdline = implode(' ', $_SERVER['argv']);
         $only = [];
         if (! empty($args)) {
             $only = array_filter(array_unique( $args ));
@@ -87,7 +88,7 @@ EOF;
                                     ltrim(preg_replace( '/^/ms', '      ', var_export($args, true) ) ));
             }
 
-            printf("<?php" . PHP_EOL . PHP_EOL . $output . PHP_EOL . '?>' . PHP_EOL);
+            printf("<?php" . PHP_EOL . PHP_EOL . ( "// generated using: $cmdline" . PHP_EOL ) . $output . PHP_EOL . '?>' . PHP_EOL);
         }
 
         // wp-includes/class-wp-post-type.php :: set_props()
