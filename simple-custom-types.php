@@ -46,6 +46,11 @@ require( SCUST_DIR . '/inc/class.widget.php' );
 //require( SCUST_DIR . '/inc/functions.api.php' );
 //require( SCUST_DIR . '/inc/functions.tpl.php' );
 
+if ( defined( 'WP_CLI' ) ) {
+  require __DIR__ . '/class-command.php';
+  WP_CLI::add_command( 'scust', 'Scust_Dump' );
+}
+
 if ( is_admin() ) {
 	// Admin class
 	require( SCUST_DIR . '/inc/class.admin.php' );
